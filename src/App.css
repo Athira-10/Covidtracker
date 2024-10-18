@@ -45,8 +45,10 @@
   font-size: 16px; 
   cursor: pointer; 
   transition: background-color 0.3s ease; 
-  margin-top: 20px; 
+  margin-top: 15px;  
+  margin-left: 40px; 
 }
+
 
 .map-toggle-button:hover {
   background-color: #0056b3; 
@@ -89,14 +91,12 @@
   width: 400px; 
   padding: 10px; 
   font-size: 16px; 
-  border: 1px solid #007bff; 
   border-radius: 5px; 
   background-color: #f8f9fa; 
   color: #333; 
   appearance: none; 
   -webkit-appearance: none; 
   -moz-appearance: none; 
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23007bff' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center; 
   background-size: 10px; 
@@ -105,9 +105,7 @@
 }
 
 
-
 .custom-select-box:focus {
-  border-color: #0056b3; 
   outline: none; 
 }
 
@@ -115,4 +113,38 @@
 .custom-select-box option {
   background-color: #f8f9fa; 
   color: #333; 
+}
+.App {
+  background-color: #f0f8ff; 
+  min-height: 100vh;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  border-radius: 8px; 
+}
+
+.data-card {
+  background-color: #c6d7e9; 
+  border: 1px solid #ced4da; 
+  border-radius: 8px; 
+  padding: 10px; 
+  margin: 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  text-align: center; 
+  width: 300px; 
+  font-size: 14px;
+  margin-left: 770px; 
+}
+
+.cases-row {
+  display: flex;
+  justify-content: center; 
+  margin: 5px 0; 
+}
+
+.cases-row p {
+  margin-right: 15px; 
+}
+
+.cases-row p:last-child {
+  margin-right: 0; 
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import PieChart from './PieChart'; 
-import LineChart from './LineChart'; 
-import CovidMap from './CovidMap'; 
+import PieChart from './PieChart';
+import LineChart from './LineChart';
+import CovidMap from './CovidMap';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
-import LoadingSpinner from './LoadingSpinner'; 
+import LoadingSpinner from './LoadingSpinner';
 import L from 'leaflet';
 
 const CovidTracking = () => {
@@ -18,7 +18,7 @@ const CovidTracking = () => {
   const API_URL = "https://disease.sh/v3/covid-19/countries/India?strict=true";
   const STATES_API_URL = "https://disease.sh/v3/covid-19/gov/India";
 
-  // Set the default marker icon
+
   delete L.Icon.Default.prototype._getIconUrl;
 
   L.Icon.Default.mergeOptions({
@@ -67,7 +67,7 @@ const CovidTracking = () => {
     if (state) {
       fetchStateData(state);
     } else {
-      setStateData(null); 
+      setStateData(null);
     }
   };
 
@@ -75,7 +75,7 @@ const CovidTracking = () => {
     setShowMap(!showMap);
   };
 
-  if (!data) return <LoadingSpinner />; 
+  if (!data) return <LoadingSpinner />;
 
   const totalCases = stateData ? stateData.cases : data.cases;
   const activeCases = stateData ? stateData.active : data.active;
@@ -96,13 +96,20 @@ const CovidTracking = () => {
       </select>
 
       <div>
-        <h2>{selectedState ? selectedState : 'India'}</h2>
-        <p>Total Cases: {totalCases}</p>
-        <p>Active Cases: {activeCases}</p>
-        <p>Recovered: {recoveredCases}</p>
-        <p>Deaths: {deaths}</p>
+        <div className="data-card">
+          <h2>{selectedState ? selectedState : 'India'}</h2>
+          <div className="cases-row">
+            <p>Total Cases: {totalCases}</p>
+            <p>Active Cases: {activeCases}</p>
+          </div>
+          <div className="cases-row">
+            <p>Recovered: {recoveredCases}</p>
+            <p>Deaths: {deaths}</p>
+          </div>
+        </div>
 
-        <PieChart 
+
+        <PieChart
           totalCases={totalCases}
           activeCases={activeCases}
           recoveredCases={recoveredCases}
@@ -110,7 +117,7 @@ const CovidTracking = () => {
           selectedState={selectedState}
         />
 
-        <LineChart 
+        <LineChart
           totalCases={totalCases}
           activeCases={activeCases}
           recoveredCases={recoveredCases}
@@ -118,14 +125,16 @@ const CovidTracking = () => {
           selectedState={selectedState}
         />
 
-        <button className="map-toggle-button" onClick={toggleMapVisibility}>
-          {showMap ? 'Hide Map' : 'Show Map'}
-        </button>
+        <div className="button-container">
+          <button className="map-toggle-button" onClick={toggleMapVisibility}>
+            {showMap ? 'Hide Map' : 'Show Map'}
+          </button>
+        </div>
 
-        <CovidMap 
-          showMap={showMap} 
-          selectedState={selectedState} 
-          totalCases={totalCases} 
+        <CovidMap
+          showMap={showMap}
+          selectedState={selectedState}
+          totalCases={totalCases}
         />
       </div>
     </div>
