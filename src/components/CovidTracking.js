@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Plot from 'react-plotly.js';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import PieChart from './PieChart'; 
+import LineChart from './LineChart'; 
+import CovidMap from './CovidMap'; 
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 import LoadingSpinner from './LoadingSpinner'; 
+import L from 'leaflet';
 
 const CovidTracking = () => {
   const [data, setData] = useState(null);
@@ -16,8 +18,16 @@ const CovidTracking = () => {
   const API_URL = "https://disease.sh/v3/covid-19/countries/India?strict=true";
   const STATES_API_URL = "https://disease.sh/v3/covid-19/gov/India";
 
+  // Set the default marker icon
+  delete L.Icon.Default.prototype._getIconUrl;
+
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  });
+
   useEffect(() => {
-    
     const fetchData = async () => {
       try {
         const response = await axios.get(API_URL);
@@ -28,7 +38,6 @@ const CovidTracking = () => {
     };
     fetchData();
 
-    
     const fetchStatesList = async () => {
       try {
         const response = await axios.get(STATES_API_URL);
@@ -68,28 +77,10 @@ const CovidTracking = () => {
 
   if (!data) return <LoadingSpinner />; 
 
- 
   const totalCases = stateData ? stateData.cases : data.cases;
   const activeCases = stateData ? stateData.active : data.active;
   const recoveredCases = stateData ? stateData.recovered : data.recovered;
   const deaths = stateData ? stateData.deaths : data.deaths;
-
-  const pieChartData = [
-    totalCases,
-    activeCases,
-    recoveredCases,
-    deaths,
-  ];
-
-  const lineChartData = [
-    {
-      x: ['Total Cases', 'Active Cases', 'Recovered', 'Deaths'],
-      y: pieChartData,
-      type: 'scatter',
-      mode: 'lines+markers',
-      name: selectedState ? selectedState : 'India',
-    },
-  ];
 
   return (
     <div className="App">
@@ -104,7 +95,6 @@ const CovidTracking = () => {
         ))}
       </select>
 
-
       <div>
         <h2>{selectedState ? selectedState : 'India'}</h2>
         <p>Total Cases: {totalCases}</p>
@@ -112,39 +102,31 @@ const CovidTracking = () => {
         <p>Recovered: {recoveredCases}</p>
         <p>Deaths: {deaths}</p>
 
-        <Plot
-          data={[
-            {
-              values: pieChartData,
-              labels: ['Total Cases', 'Active Cases', 'Recovered', 'Deaths'],
-              type: 'pie',
-            },
-          ]}
-          layout={{ title: `COVID-19 Data Distribution for ${selectedState ? selectedState : 'India'}` }}
+        <PieChart 
+          totalCases={totalCases}
+          activeCases={activeCases}
+          recoveredCases={recoveredCases}
+          deaths={deaths}
+          selectedState={selectedState}
         />
 
-        <Plot
-          data={lineChartData}
-          layout={{ title: `COVID-19 Line Chart for ${selectedState ? selectedState : 'India'}`, xaxis: { title: 'Categories' }, yaxis: { title: 'Number of Cases' } }}
+        <LineChart 
+          totalCases={totalCases}
+          activeCases={activeCases}
+          recoveredCases={recoveredCases}
+          deaths={deaths}
+          selectedState={selectedState}
         />
 
         <button className="map-toggle-button" onClick={toggleMapVisibility}>
           {showMap ? 'Hide Map' : 'Show Map'}
         </button>
 
-        {showMap && (
-          <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '400px', width: '100%' }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={[20.5937, 78.9629]}>
-              <Popup>
-                {selectedState ? selectedState : 'India'} <br /> Total Cases: {totalCases}
-              </Popup>
-            </Marker>
-          </MapContainer>
-        )}
+        <CovidMap 
+          showMap={showMap} 
+          selectedState={selectedState} 
+          totalCases={totalCases} 
+        />
       </div>
     </div>
   );
